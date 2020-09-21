@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="183bc34c-e5c3-48ee-be77-46e478504953" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="status-webhook-converterFlow" doc:id="a1d6d44b-d056-4667-8faf-76738a5cf393" >
+		<http:listener doc:name="Listener" doc:id="b9010753-1eb2-4d74-a457-35cda33f37ed" config-ref="HTTP_Listener_config" path="/{type}/{host}/*"/>
+		<choice doc:name="Choice" doc:id="fc49292b-4808-4051-b436-24981b97b8ba" >
+			<when expression="#[payload.incident != null]">
+				<set-variable value="#[attributes.uriParams.host]" doc:name="host" doc:id="79bf1217-3fe3-44fd-9acb-8e6a43c46eeb" variableName="host" />
+				<set-variable value="#[attributes.maskedRequestPath]" doc:name="path" doc:id="e7543de3-ff67-4f7f-9727-507d743621aa" variableName="path" />
+				<set-variable value="#[(attributes.uriParams['type'] default &quot;&quot;) ++ &quot;.dwl&quot;]" doc:name="dwFileName" doc:id="577cba49-e7f0-48f1-9d23-e7154ec8cea5" variableName="dwFileName" />
+				<ee:dynamic-evaluate doc:name="Dynamic Evaluate" doc:id="cdd1c217-8403-41c5-b249-b03cbf1d03f1" expression='#[readUrl("classpath://dw/" ++ vars.dwFileName, "text/plain")]' />
+				<http:request method="POST" doc:name="Request" doc:id="ac6f82ff-e148-4d8a-83d2-5ae5c8ddedff" url='#["https://$(vars.host)/$(vars.path)"]'/>
+			</when>
+			<otherwise >
+				<logger level="INFO" doc:name="Logger" doc:id="1bba0f43-963c-4935-82d9-ed9627c82651" message="#[payload]"/>
+			</otherwise>
+		</choice>
+		<error-handler >
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="5a2b1c58-5b59-47d0-9695-c4fc1febce6c" />
+		</error-handler>
+	</flow>
+</mule>
