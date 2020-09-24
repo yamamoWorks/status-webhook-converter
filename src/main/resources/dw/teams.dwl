@@ -13,7 +13,7 @@ fun getFacts() =
     map
         {
             "name": capitalize($.key),
-            "value": ($.value >> "JST") as LocalDateTime replace "T" with" "
+            "value": (($.value >> p("TimeZone") as TimeZone) as LocalDateTime as String { format: "yyyy/MM/dd(E) HH:mm" }) ++ " " ++ p("TimeZone")
         }
 
 fun getColor(status) =
