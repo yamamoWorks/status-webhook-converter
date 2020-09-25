@@ -40,7 +40,7 @@ fun getColor(status) =
     sections: [
         {
             activityTitle: capitalize(payload.incident.status),
-            activityText: payload.incident.incident_updates[0].body,
+            activityText: payload.incident.incident_updates[0].body replace /\n/ with "<br />",
             text: getAffectedComponents(),
             facts: getFacts(),
             markdown: true

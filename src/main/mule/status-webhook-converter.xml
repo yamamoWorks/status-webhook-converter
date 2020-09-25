@@ -11,7 +11,7 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 	<global-property doc:name="Global Property" doc:id="54c2cbd7-a4fa-4005-9cab-5bb8cc29489b" name="TimeZone" value="UTC" />
 	<flow name="status-webhook-converterFlow" doc:id="a1d6d44b-d056-4667-8faf-76738a5cf393" >
 		<http:listener doc:name="Listener" doc:id="b9010753-1eb2-4d74-a457-35cda33f37ed" config-ref="HTTP_Listener_config" path="/{type}/{host}/*"/>
-		<logger level="INFO" doc:name="Logger" doc:id="1bba0f43-963c-4935-82d9-ed9627c82651" message="#[payload]" />
+		<logger level="INFO" doc:name="Logger" doc:id="1bba0f43-963c-4935-82d9-ed9627c82651" message="#[payload]"/>
 		<choice doc:name="Choice" doc:id="fc49292b-4808-4051-b436-24981b97b8ba" >
 			<when expression="#[payload.incident != null]">
 				<set-variable value="#[attributes.uriParams.host]" doc:name="host" doc:id="79bf1217-3fe3-44fd-9acb-8e6a43c46eeb" variableName="host" />
