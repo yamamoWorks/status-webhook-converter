@@ -9,7 +9,7 @@ fun getAffectedComponents() =
 
 fun getFacts() = 
     entriesOf(payload.incident)
-    filter (["scheduled_for", "scheduled_until"] contains $.key as String)
+    filter ((["scheduled_for", "scheduled_until"] contains $.key as String) and $.value != null)
     map
         {
             "name": capitalize($.key),

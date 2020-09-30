@@ -22,7 +22,8 @@ http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/
 			</when>
 		</choice>
 		<error-handler >
-			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="5a2b1c58-5b59-47d0-9695-c4fc1febce6c" />
+			<on-error-continue enableNotifications="true" logException="true" doc:name="On Error Continue" doc:id="5a2b1c58-5b59-47d0-9695-c4fc1febce6c" >
+			</on-error-continue>
 		</error-handler>
 	</flow>
 </mule>
