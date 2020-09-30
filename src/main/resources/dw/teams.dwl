@@ -7,13 +7,22 @@ var affectedComponents = payload.incident.incident_updates[0].affected_component
 fun getAffectedComponents() = 
     if(affectedComponents != null) "**Affected Components** <br/>"  ++ (affectedComponents joinBy " <br/>") else ""
 
-fun getFacts() = 
+fun getDateTimeFacts() = 
     entriesOf(payload.incident)
-    filter ((["scheduled_for", "scheduled_until"] contains $.key as String) and $.value != null)
+    filter ((["updated_at", "resolved_at", "scheduled_for", "scheduled_until"] contains $.key as String) and $.value != null)
     map
         {
             "name": capitalize($.key),
             "value": (($.value >> p("TimeZone") as TimeZone) as LocalDateTime as String { format: "yyyy/MM/dd(E) HH:mm" }) ++ " " ++ p("TimeZone")
+        }
+
+fun getTextFacts() = 
+    entriesOf(payload.incident)
+    filter ((["status", "impact"] contains $.key as String) and $.value != null)
+    map
+        {
+            "name": capitalize($.key),
+            "value": capitalize($.value)
         }
 
 fun getColor(status) =
@@ -42,7 +51,7 @@ fun getColor(status) =
             activityTitle: capitalize(payload.incident.status),
             activityText: payload.incident.incident_updates[0].body replace /\n/ with "<br />",
             text: getAffectedComponents(),
-            facts: getFacts(),
+            facts: (getTextFacts() ++ getDateTimeFacts()),
             markdown: true
         }
     ]
